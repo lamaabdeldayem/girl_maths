@@ -1,0 +1,85 @@
+classDiagram
+  direction LR
+  class Expense {
+    +String id
+    +String title
+    +double amount
+    +DateTime date
+    +String categoryId
+    +String? note
+    +String? imagePath
+    +bool isSynced
+    +DateTime updatedAt
+    +toMap() / fromMap()
+    +toJson() / fromJson()
+    +copyWith()
+  }
+  class ExpenseCategory {
+    +String id
+    +String emoji
+    +String nameEn / nameAr
+    +String justificationEn / Ar
+    +Color color
+    +byId(id)$
+    +migrateLegacy(label)$
+  }
+  class SavingsGoal {
+    +String id
+    +String title
+    +String emoji
+    +double targetAmount
+    +double savedAmount
+    +DateTime? deadline
+    +String? imagePath
+    +progress / remaining
+    +dailyNeeded(now)
+  }
+  class MonthlySummary {
+    +DateTime month
+    +List~Expense~ expenses
+    +total / count
+    +byCategory / byDay / byWeekday
+    +averagePerDay(now)
+    +projectedTotal(now)
+    +busiestWeekday / biggestExpense
+  }
+  class ExpenseProvider {
+    -List~Expense~ _expenses
+    +selectedMonth / query / categoryFilter
+    +init() / refresh()
+    +addExpense() / updateExpense()
+    +removeExpense() / restoreExpense()
+    +summaryFor(month)
+  }
+  class GoalsProvider {
+    +goals
+    +saveGoal() / addMoney() / deleteGoal()
+  }
+  class SettingsProvider {
+    +themeMode / languageCode / currency
+    +monthlyBudget / freeThreshold
+    +userName / profileImagePath / userId
+  }
+  class SyncRepository {
+    +cachedExpenses() / refreshExpenses()
+    +saveExpense() / deleteExpense()
+    +pushPending() / pendingCount()
+  }
+  class LocalStore {
+    <<interface>>
+  }
+  class DatabaseHelper {
+    SQLite cache
+  }
+  class FirebaseService {
+    REST: GET / PUT / DELETE
+  }
+  Expense "*" --> "1" ExpenseCategory : categoryId
+  MonthlySummary o-- Expense
+  ExpenseProvider --> SyncRepository
+  GoalsProvider --> SyncRepository
+  ExpenseProvider ..> MonthlySummary : creates
+  SyncRepository --> LocalStore
+  SyncRepository --> FirebaseService
+  DatabaseHelper ..|> LocalStore
+  GoalsProvider o-- SavingsGoal

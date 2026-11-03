@@ -1,0 +1,35 @@
+erDiagram
+  CATEGORIES ||--o{ EXPENSES : "categorises"
+  CATEGORIES {
+    TEXT id PK
+    TEXT emoji
+    TEXT name_en
+    TEXT name_ar
+    INTEGER color
+  }
+  EXPENSES {
+    TEXT id PK
+    TEXT title
+    REAL amount
+    TEXT date
+    TEXT category_id FK
+    TEXT note
+    TEXT image_path
+    INTEGER is_synced
+    TEXT updated_at
+  }
+  SAVINGS_GOALS {
+    TEXT id PK
+    TEXT title
+    TEXT emoji
+    REAL target_amount
+    REAL saved_amount
+    TEXT deadline
+    TEXT image_path
+    TEXT created_at
+    INTEGER is_synced
+  }
+  PENDING_DELETES {
+    TEXT id PK
+    TEXT collection
+  }

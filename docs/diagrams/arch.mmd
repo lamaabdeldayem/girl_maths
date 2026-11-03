@@ -1,0 +1,22 @@
+flowchart LR
+  subgraph UI["UI (screens & widgets)"]
+    H[Home] --- E[Expenses] --- I[Insights] --- G[Goals] --- S[Settings]
+  end
+  subgraph State["Providers (ChangeNotifier)"]
+    EP[ExpenseProvider]
+    GP[GoalsProvider]
+    SP[SettingsProvider]
+  end
+  subgraph Data["Data layer"]
+    R[SyncRepository]
+    DB[(SQLite cache<br/>DatabaseHelper)]
+    FB[(Firebase Realtime DB<br/>REST via http)]
+    PR[(SharedPreferences)]
+  end
+  UI -- watch / read --> State
+  EP --> R
+  GP --> R
+  SP --> PR
+  R -- "1 · read cache first" --> DB
+  R -- "2 · fetch + push pending" --> FB
+  R -- "3 · overwrite cache" --> DB
